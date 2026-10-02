@@ -1,0 +1,36 @@
+import assert from 'node:assert/strict';
+
+const origin = process.env.COMEMOS_TEST_ORIGIN || 'http://127.0.0.1:8787';
+if (!/^http:\/\/(127\.0\.0\.1|localhost):\d+$/.test(origin)) throw new Error('Esta prueba crea datos desechables y solo permite un servidor local.');
+let cookie = '';
+async function api(path, data) {
+  const response = await fetch(origin+'/api/'+path, {method:data === undefined ? 'GET':'POST', headers:{'Content-Type':'application/json', Cookie:cookie, Origin:origin}, body:data === undefined ? undefined : JSON.stringify(data)});
+  const body = await response.json();
+  assert.equal(response.status,200,`${path}: ${JSON.stringify(body)}`);
+  if (response.headers.has('Set-Cookie')) cookie = response.headers.get('Set-Cookie').split(';')[0];
+  return body;
+}
+const email = `qa-${Date.now()}@example.test`;
+await api('register',{name:'Prueba local',email,password:'local-test-password'});
+let initial=await api('state');
+assert.equal(initial.group,undefined); assert.ok(initial.users.some(u=>u.id===initial.user.id));
+let state = await api('state');
+assert.ok(state.user.id);
+await api('restaurants',{name:'Restaurante de prueba local',cuisine:'Casera',price:'14',minutes:'5',address:'Datos de QA'});
+state = await api('state');
+const id = state.restaurants.at(-1).id;
+await api('ratings',{restaurant_id:id,quality:5,service:4,value:5,distance:4});
+const rows = await api('recommendations',{members:[state.user.id]});
+assert.equal(rows.recommendations.find(r=>r.id===id).coverage,1);
+await api('filters',{max_minutes:4,max_price:14,cuisine:'Casera'});
+assert.equal((await api('recommendations',{members:[state.user.id]})).recommendations.some(r=>r.id===id),false);
+await api('filters',{max_minutes:5,max_price:14,cuisine:'Casera'});
+assert.equal((await api('recommendations',{members:[state.user.id]})).recommendations.some(r=>r.id===id),true);
+await api('logout',{});
+await api('login',{email,password:'local-test-password'});
+state = await api('state');
+assert.equal(state.ratings.find(r=>r.restaurant_id===id).quality,5);
+assert.equal(state.users.find(u=>u.id===state.user.id).filters.max_minutes,5);
+await api('logout',{});
+assert.equal((await fetch(origin+'/')).status,200);
+console.log('Worker + D1 local: registro libre, listado de compañeros, sesión, restaurante, notas, filtros persistentes, recomendaciones, nuevo acceso y assets OK. Cuenta QA local: '+email);

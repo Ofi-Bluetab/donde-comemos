@@ -62,3 +62,5 @@
 - GitHub: verificada cuenta personal David-Fde en vivo; ADR 0015 sustituye destino organización. Documentación y preparación local actualizadas, sin recursos externos creados.
 
 - Autorizada creación y carga del repositorio personal; verificada identidad y copia de 70 archivos. Pendiente sesión del navegador.
+
+- Creado repositorio privado David-Fde/donde-comemos y cargados 70 archivos revisados en main; imágenes binarias preservadas. Sin producción ni permisos adicionales.

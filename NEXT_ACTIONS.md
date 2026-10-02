@@ -12,7 +12,8 @@ Corrección publicada y migración 0005 aplicada. Mantener D1/PASSWORD_PEPPER y 
 
 - Recargar y probar Localizar dirección en el dispositivo propio; aceptar permiso si se desea usar ubicación. Alternativa Buscar dirección escrita.
 
-- Crear repositorio privado vacío David-Fde/donde-comemos bajo la cuenta personal verificada (ADR 0015). gh no instalado y conector sin creación de repositorios: creación/carga pendientes. Revisar copia de data/share antes de cargar. Configurar identidad Git local confirmada antes del primer commit. Identificar colaboradores antes de invitar; varios Admin requieren organización.
+- GitHub creado y cargado: https://github.com/David-Fde/donde-comemos (privado, main). Clonar en una carpeta nueva para continuar; mantener esta copia con sus datos locales.
 
 
-- Iniciar sesión como David-Fde en la pestaña GitHub abierta; después crear donde-comemos privado y cargar la copia revisada. Creación/carga expresamente autorizadas por el usuario; no volver a solicitar autorización para esos pasos.
+- Identificar colaboradores antes de invitarlos; varios Admin requieren organización. No hay despliegue automático.
+

@@ -2,7 +2,7 @@
 
 Actualizado: 2026-10-02.
 
-GitHub ADR 0015: cuenta personal David-Fde (ID 54890715) verificada en vivo. Sustituye destino organización de 0014; DavidBluetab es histórico. Destino previsto privado David-Fde/donde-comemos, ausente del listado accesible. Sin commits/remoto ni identidad Git local configurada. gh no instalado y conector sin creación de repositorios. Creación/carga pendientes; sin invitaciones ni cambios de producción.
+GitHub completado: https://github.com/David-Fde/donde-comemos, privado, propietario David-Fde ID 54890715 y rama main verificados. Copia revisada de 70 archivos cargada mediante conector. Cinco imágenes Leaflet corregidas mediante blobs base64 tras detectar conversión de texto. Sin datos/secretos, invitaciones, Actions ni cambios de producción. Git local sigue sin commits/remoto; trabajar desde un clon nuevo para continuar.
 
 ADR0014: preparada colaboración con todos los colaboradores identificados como administradores. Guía docs/COLABORACION.md, exportador scripts/prepare-sharing.mjs y exclusiones Git ampliadas. Exportación local de 69 archivos pasa comprobación de secretos conocidos/patrones; Git ignora datos, vars, entornos y claves. GitHub conectado como DavidBluetab, sin organización disponible. Git sin commits/remoto; gh no disponible. Usuario aún no conoce correos. No se han creado recursos ni concedido permisos ni modificado producción.
 
@@ -14,13 +14,13 @@ Limitación vigente: renovación directa Overpass desde Workers agotó el tiempo
 
 Actualizado: 2026-10-02.
 
-GitHub ADR 0015: cuenta personal David-Fde (ID 54890715) verificada en vivo. Sustituye destino organización de 0014; DavidBluetab es histórico. Destino previsto privado David-Fde/donde-comemos, ausente del listado accesible. Sin commits/remoto ni identidad Git local configurada. gh no instalado y conector sin creación de repositorios. Creación/carga pendientes; sin invitaciones ni cambios de producción.
+GitHub completado: https://github.com/David-Fde/donde-comemos, privado, propietario David-Fde ID 54890715 y rama main verificados. Copia revisada de 70 archivos cargada mediante conector. Cinco imágenes Leaflet corregidas mediante blobs base64 tras detectar conversión de texto. Sin datos/secretos, invitaciones, Actions ni cambios de producción. Git local sigue sin commits/remoto; trabajar desde un clon nuevo para continuar.
 
 Mejora de cercanos ADR 0009 publicada: versión 03b9c3a2-f08b-4ed0-9115-0682a616c88c en la URL existente, Free. Migración 0004 remota aplicada. Smoke remoto real OK: rutas a pie, precio desconocido excluido con presupuesto, filtros y oficina persistentes tras nuevo acceso. Cuenta QA exacta retirada: 2 cuentas, 1 restaurante, 1 valoración y 0 QA restantes. Oficina aproximada de la plaza indicada, origen personal ajustable, OSM/Overpass, rutas a pie FOSSGIS, mapa Leaflet local, filtros estrictos de seleccionados y candidatos sin precio separados. Importación con precio confirmado y deduplicación OSM. Migración 0004 aditiva local OK. Siete tests SQLite, sintaxis, dry-run y smoke real local OK. UI con Asiática/10 min/20 €, formulario y móvil 390 revisada. Copia remota previa data/backups/antes-cercanos-20261002.sql: 2 cuentas, 1 restaurante, 1 nota. Sin cambiar datos reales ni secretos.
 
 Actualizado: 2026-10-02.
 
-GitHub ADR 0015: cuenta personal David-Fde (ID 54890715) verificada en vivo. Sustituye destino organización de 0014; DavidBluetab es histórico. Destino previsto privado David-Fde/donde-comemos, ausente del listado accesible. Sin commits/remoto ni identidad Git local configurada. gh no instalado y conector sin creación de repositorios. Creación/carga pendientes; sin invitaciones ni cambios de producción.
+GitHub completado: https://github.com/David-Fde/donde-comemos, privado, propietario David-Fde ID 54890715 y rama main verificados. Copia revisada de 70 archivos cargada mediante conector. Cinco imágenes Leaflet corregidas mediante blobs base64 tras detectar conversión de texto. Sin datos/secretos, invitaciones, Actions ni cambios de producción. Git local sigue sin commits/remoto; trabajar desde un clon nuevo para continuar.
 
 Versión vigente: listado común y participantes de cada comida, ADR 0008 supersede 0007. Retirados creación/unión/selector/códigos de grupos y sus rutas; registro libre lleva directamente al catálogo y listado de compañeros. Marcar comensales aplica sus filtros del día y calcula recomendaciones. Notas y filtros personales conservados. Tablas/migraciones previas intactas y sin uso; no fue necesaria nueva migración.
 
@@ -54,3 +54,4 @@ Publicación visual completada: fcf7eeee-e4be-4319-b4c1-c8f0a0242212 en la URL e
 
 
 GitHub creación autorizada el 2026-10-02: login conector confirma David-Fde. Navegador abierto en github.com/new redirige a inicio de sesión; pendiente acceso del usuario en esa pestaña. Nueva copia de 70 archivos pasa el exportador. No creado repositorio ni cargado archivos todavía.
+

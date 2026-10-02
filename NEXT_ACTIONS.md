@@ -17,3 +17,5 @@ Corrección publicada y migración 0005 aplicada. Mantener D1/PASSWORD_PEPPER y 
 
 - Identificar colaboradores antes de invitarlos; varios Admin requieren organización. No hay despliegue automático.
 
+
+- Abrir un chat nuevo en este proyecto y pedir: «Enumera los archivos de instrucciones que has cargado y resume sus reglas». Comprobar que incluye AGENTS.md de la raíz.

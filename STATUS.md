@@ -13,7 +13,7 @@ Actualizado: 2026-10-03. Historial en AGENT_LOG.md y CHANGELOG.md.
 ## Verificación registrada y límites
 - Verificaciones previas: ocho pruebas SQL/SQLite, checks y build dry-run correctos. Smoke local/remoto y QA de cercanos/listado/filtros completados según bitácora, con limpieza de cuentas QA.
 - Geolocalización: éxito y errores probados mediante simulación; ubicación real y diálogo de permiso no comprobados.
-- Último recuento remoto registrado: 2 cuentas, 1 restaurante y 1 valoración, sin QA. Es una comprobación previa, no un recuento actual.
+- Limpieza de producción autorizada y verificada el 2026-10-03: 0 usuarios, restaurantes, valoraciones, sesiones, filtros, ubicaciones, grupos históricos y caché. Respaldo privado previo data/backups/d1-20261003-112254.sql; estructura, migraciones y secretos conservados.
 - Renovación directa Overpass desde Workers agotó el tiempo. Smoke online pasó con caché pública real y rutas reales; no confirma renovación futura. Frescura seis horas y respaldo máximo siete días con aviso; otros destinos sin caché pueden fallar.
 - Sin respaldos diarios externos, verificación de correo, recuperación de contraseña, monitor periódico ni pipeline de despliegue. El agente despliega los cambios comprobados por autorización persistente del usuario, salvo instrucción contraria. Más límites en RISKS.md.
 
@@ -36,4 +36,5 @@ ADR 0016: retirada búsqueda escrita en UI, campo de salida visible y solo lectu
 Autorización persistente 2026-10-03 guardada en AGENTS.md: desplegar cambios de aplicación comprobados salvo instrucción contraria. Respaldo previo data/backups/d1-20261003-110538.sql, despliegue exitoso, HTML/JS publicados verificados sin escribir cuentas QA. Permiso/ubicación real siguen pendientes de comprobación del usuario.
 
 ADR 0017 publicado: dirección inversa CartoCiudad conserva origen GPS; sin dirección/proveedor muestra punto disponible sin coordenadas. Mapa abierto lateral escritorio y debajo móvil. Nueve tests/checks/dry-run OK, flujo UI simulado OK, QA visual local con datos ficticios y teselas reales; escritorio 1280 sin overflow, móvil390 una columna/mapa340 sin overflow. Fuente real probada con punto público de oficina desde host; endpoint autenticado probado con proveedor simulado, no se afirma prueba remota autenticada real. Respaldo data/backups/d1-20261003-111518.sql; sin migración, datos reales/secretos intactos.
+
 

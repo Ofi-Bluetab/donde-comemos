@@ -6,7 +6,7 @@
 4. Revisar cuotas Free y disponibilidad comunitaria durante el piloto.
 5. Solo si se solicita: restringir ALLOWED_EMAILS o automatizar respaldos externos gratuitos.
 
-Corrección publicada y migración 0005 aplicada. Mantener D1/PASSWORD_PEPPER y datos reales. No implementados: verificación de correo, respaldos diarios externos ni funciones de IDEAS.md.
+Corrección publicada y migración 0005 aplicada. Mantener D1/PASSWORD_PEPPER. Datos de producción reiniciados por petición del usuario el 2026-10-03; cada participante debe crear una cuenta nueva. No implementados: verificación de correo, respaldos diarios externos ni funciones de IDEAS.md.
 
 - Recargar la versión visual y comparar tarjetas; enlaces de reseñas pueden requerir elegir la ficha Google correcta.
 
@@ -26,3 +26,4 @@ Corrección publicada y migración 0005 aplicada. Mantener D1/PASSWORD_PEPPER y 
 
 
 - Recargar ADR 0017 y comprobar dirección aproximada en el dispositivo propio. Si falta dirección, reintentar Localizar mi ubicación; proveedor comunitario sin garantía, punto guardado se conserva.
+

@@ -74,3 +74,5 @@
 - Guardada autorización persistente de despliegue en AGENTS.md: cambios de aplicación comprobados se publican salvo instrucción contraria; documentación se sincroniza sin redeploy innecesario.
 
 - ADR 0017 publicado (2ed696b6-7190-4336-b957-7b84d1dbd8c7): dirección aproximada del portal más cercano sin sustituir GPS, mapa abierto lateral, tarjetas compactas y móvil apilado. Sin búsqueda escrita ni migración.
+
+2026-10-03: limpieza de datos de producción solicitada para iniciar la primera versión funcional: usuarios, restaurantes, notas, sesiones, filtros, ubicaciones, grupos históricos, intentos y caché vacíos. Estructura y secretos intactos; sin redeploy de código.

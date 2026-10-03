@@ -72,3 +72,5 @@
 
 - Publicado ADR 0016: versión 28b080ad-7b78-43ec-92d7-a4e06e6a5ec0. HTML/JS online comprobados; respaldo previo D1 y datos/secretos conservados.
 - Guardada autorización persistente de despliegue en AGENTS.md: cambios de aplicación comprobados se publican salvo instrucción contraria; documentación se sincroniza sin redeploy innecesario.
+
+- ADR 0017 publicado (2ed696b6-7190-4336-b957-7b84d1dbd8c7): dirección aproximada del portal más cercano sin sustituir GPS, mapa abierto lateral, tarjetas compactas y móvil apilado. Sin búsqueda escrita ni migración.

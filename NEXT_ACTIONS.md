@@ -10,7 +10,7 @@ Corrección publicada y migración 0005 aplicada. Mantener D1/PASSWORD_PEPPER y 
 
 - Recargar la versión visual y comparar tarjetas; enlaces de reseñas pueden requerir elegir la ficha Google correcta.
 
-- Recargar y probar Localizar mi ubicación en el dispositivo propio; aceptar permiso si se desea usar ubicación. Campo de salida de solo lectura con coordenadas.
+- Recargar y probar Localizar mi ubicación en el dispositivo propio; aceptar permiso si se desea usar ubicación. Dirección aproximada en campo de solo lectura y mapa abierto junto al listado.
 
 - GitHub creado y cargado: https://github.com/David-Fde/donde-comemos (privado, main). Clonar en una carpeta nueva para continuar; mantener esta copia con sus datos locales.
 
@@ -23,3 +23,6 @@ Corrección publicada y migración 0005 aplicada. Mantener D1/PASSWORD_PEPPER y 
 
 - Recargar la aplicación publicada y comprobar Localizar mi ubicación desde el dispositivo propio. ADR 0016 desplegado; HTML/JS online comprobados y flujo probado con ubicación simulada.
 
+
+
+- Recargar ADR 0017 y comprobar dirección aproximada en el dispositivo propio. Si falta dirección, reintentar Localizar mi ubicación; proveedor comunitario sin garantía, punto guardado se conserva.

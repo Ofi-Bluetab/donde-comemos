@@ -5,10 +5,10 @@ Actualizado: 2026-10-03. Historial en AGENT_LOG.md y CHANGELOG.md.
 ## Aplicación
 - Cloudflare Workers + D1, plan Free, presupuesto cero.
 - URL: https://donde-comemos.mesa-equipo-dfv.workers.dev
-- Última versión publicada: 28b080ad-7b78-43ec-92d7-a4e06e6a5ec0 (ADR 0016), desplegada y assets online comprobados el 2026-10-03.
+- Última versión publicada: 2ed696b6-7190-4336-b957-7b84d1dbd8c7 (ADR 0017), desplegada y assets online comprobados el 2026-10-03.
 - Registro libre, listado común y selección de participantes para cada comida. Notas personales y filtros diarios en Europe/Madrid. ADR 0008 sustituye los grupos persistentes de 0007; tablas históricas conservadas sin uso.
-- Cercanos: CartoCiudad, OSM/Overpass, rutas peatonales FOSSGIS, filtros estrictos y precios aportados por el equipo. Tarjetas prioritarias, mapa desplegable y enlaces gratuitos Google Maps (sin importar ratings).
-- Geolocalización explícita opcional guardada como salida personal «Mi ubicación»; campo de solo lectura con coordenadas; búsqueda escrita retirada y publicada (ADR 0016). Migración 0005 aplicada según registro previo. D1 y PASSWORD_PEPPER existentes se conservan.
+- Cercanos: CartoCiudad, OSM/Overpass, rutas peatonales FOSSGIS, filtros estrictos y precios aportados por el equipo. Tarjetas prioritarias, mapa abierto junto al listado (apilado en móvil) y enlaces gratuitos Google Maps (sin importar ratings).
+- Geolocalización explícita opcional guardada como salida personal «Mi ubicación»; campo de solo lectura con dirección aproximada CartoCiudad; búsqueda escrita retirada (ADR 0017). Migración 0005 aplicada según registro previo. D1 y PASSWORD_PEPPER existentes se conservan.
 
 ## Verificación registrada y límites
 - Verificaciones previas: ocho pruebas SQL/SQLite, checks y build dry-run correctos. Smoke local/remoto y QA de cercanos/listado/filtros completados según bitácora, con limpieza de cuentas QA.
@@ -34,3 +34,6 @@ ADR 0016: retirada búsqueda escrita en UI, campo de salida visible y solo lectu
 
 
 Autorización persistente 2026-10-03 guardada en AGENTS.md: desplegar cambios de aplicación comprobados salvo instrucción contraria. Respaldo previo data/backups/d1-20261003-110538.sql, despliegue exitoso, HTML/JS publicados verificados sin escribir cuentas QA. Permiso/ubicación real siguen pendientes de comprobación del usuario.
+
+ADR 0017 publicado: dirección inversa CartoCiudad conserva origen GPS; sin dirección/proveedor muestra punto disponible sin coordenadas. Mapa abierto lateral escritorio y debajo móvil. Nueve tests/checks/dry-run OK, flujo UI simulado OK, QA visual local con datos ficticios y teselas reales; escritorio 1280 sin overflow, móvil390 una columna/mapa340 sin overflow. Fuente real probada con punto público de oficina desde host; endpoint autenticado probado con proveedor simulado, no se afirma prueba remota autenticada real. Respaldo data/backups/d1-20261003-111518.sql; sin migración, datos reales/secretos intactos.
+

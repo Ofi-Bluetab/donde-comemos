@@ -25,3 +25,5 @@
 - Geolocalización opcional solicitada por usuario: coordenadas guardadas como salida por cuenta y usadas por proveedores al buscar. Precisión depende del dispositivo; etiqueta Mi ubicación no es dirección postal.
 
 - Administradores del repositorio/Cloudflare podrán modificar código, despliegues y datos. Acceso solo a colaboradores identificados; no a todos los comensales. No habilitar planes de pago ni compartir contraseñas. La comprobación de copia detecta patrones y secretos locales conocidos, no garantiza detectar cualquier secreto desconocido.
+
+- Dirección inversa CartoCiudad es aproximada (portal más cercano hasta 350 m); puede no identificar el acceso exacto ni estar disponible fuera de España. Se conserva el punto GPS y se informa si falta dirección. Coordenadas enviadas a CartoCiudad al resolverla, sin nombres/correos/notas.

@@ -1,4 +1,4 @@
-import {nearby, officeFor, locateOffice, validPoint} from './nearby.js';
+import {nearby, officeFor, locateOffice, reverseOffice, validPoint} from './nearby.js';
 import {recommendations} from './recommendations.js';
 import {today, emptyFilters, matchesFilters} from '../public/filters.js';
 import {randomToken, sha256, passwordHash, verifyPassword, sessionToken, sessionCookie} from './auth.js';
@@ -121,6 +121,7 @@ async function handle(request, env) {
     await query(env, 'DELETE FROM sessions WHERE token_hash=?', await sha256(sessionToken(request))).run();
     return json(200, {ok:true}, sessionCookie(request, '', 0));
   }
+  if (path === '/api/office/reverse') return json(200,await reverseOffice(env,data,fail));
   if (path === '/api/office/search') return json(200,await locateOffice(env,data,fail));
   if (path === '/api/office') {
     if (!validPoint(data)) fail(400,'Revisa las coordenadas de la oficina.');
@@ -187,3 +188,4 @@ export default {
     }
   }
 };
+

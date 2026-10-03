@@ -243,3 +243,16 @@ test('office address lookup requires explicit confirmation and keeps saved locat
  assert.deepEqual((await f.request('/api/state',undefined,a.cookie)).body.office,saved);
  }finally{f.database.close();}
 });
+
+test('reverse address preserves GPS point, formats portal, caches and handles missing or distant addresses',async()=>{
+ const f=fixture();try{
+ const a=await f.request('/api/register',{name:'Reverse',email:'reverse@example.test',password:'test-password'});
+ const p={latitude:40.45,longitude:-3.69};let calls=0;
+ f.env.NEARBY_FETCH=async url=>{calls++;assert.ok(url.includes('reverseGeocode'));return Response.json({tip_via:'CALLE',address:'PRUEBA',portalNumber:12,muni:'Madrid',lat:40.4501,lng:-3.6901});};
+ const r=await f.request('/api/office/reverse',p,a.cookie);assert.equal(r.status,200);assert.equal(r.body.address,'CALLE PRUEBA 12 Madrid');assert.equal(r.body.approximate,true);
+ assert.equal((await f.request('/api/office/reverse',p,a.cookie)).status,200);assert.equal(calls,1);assert.equal(f.database.prepare('SELECT COUNT(*) n FROM office_locations').get().n,0);
+ assert.equal((await f.request('/api/office/reverse',{latitude:'40',longitude:0},a.cookie)).status,400);
+ f.database.exec('DELETE FROM nearby_cache;DELETE FROM provider_limits');f.env.NEARBY_FETCH=async()=>Response.json({address:'Lejos',lat:41,lng:-3});assert.equal((await f.request('/api/office/reverse',p,a.cookie)).body.address,'');
+ f.database.exec('DELETE FROM nearby_cache;DELETE FROM provider_limits');f.env.NEARBY_FETCH=async()=>{throw Error('offline');};assert.equal((await f.request('/api/office/reverse',p,a.cookie)).status,503);
+ }finally{f.database.close();}
+});

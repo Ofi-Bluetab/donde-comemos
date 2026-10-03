@@ -12,7 +12,7 @@ Filtros de hoy: minutos máximos a pie (solo ida), presupuesto máximo por perso
 
 ## Restaurantes cercanos
 
-Marca comensales, guarda tus filtros y abre «Cerca de la oficina». Pulsa «Localizar mi ubicación» y acepta el permiso del navegador. El campo de solo lectura muestra la salida guardada y, para Mi ubicación, sus coordenadas; no obtiene una dirección postal. Puedes ajustar el acceso pulsando el mapa y «Guardar acceso ajustado». Se conserva por cuenta; no hay búsqueda de dirección escrita. Las salidas anteriores se conservan. Elige 500 m, 1 km o 2 km y busca. Analiza hasta 30 destinos con cocina compatible, ordenados por tiempo de ruta peatonal estimado; no es exhaustivo ni incluye comer/vuelta.
+Marca comensales, guarda tus filtros y abre «Cerca de la oficina». Pulsa «Localizar mi ubicación» y acepta el permiso del navegador. El campo de solo lectura muestra la dirección aproximada del portal más cercano obtenida de CartoCiudad (IGN/CNIG), conservando tu punto GPS para las rutas. Si el servicio falla, el punto sigue disponible sin mostrar coordenadas. Puedes ajustar el acceso pulsando el mapa y «Guardar acceso ajustado». Se conserva por cuenta; no hay búsqueda de dirección escrita. Las salidas anteriores se conservan. Elige 500 m, 1 km o 2 km y busca. Analiza hasta 30 destinos con cocina compatible, ordenados por tiempo de ruta peatonal estimado; no es exhaustivo ni incluye comer/vuelta.
 
 Mapa Leaflet local y datos OpenStreetMap/Overpass; rutas FOSSGIS OSRM foot. No hace falta GPS, clave ni suscripción. El servidor aplica filtros vigentes de todos los seleccionados, nunca relaja límites. Precios por persona confirmados por el equipo, sin inferirlos de OSM. Si falta precio y hay presupuesto, aparece solo en «Pendientes de comprobar el presupuesto»; «Completar y guardar» exige precio/cocina antes de reutilizarlo en búsqueda y valoraciones. Cocina/tiempo desconocidos no cumplen sus límites.
 
@@ -60,11 +60,12 @@ Direcciones de España: CartoCiudad (IGN/CNIG), búsqueda explícita sin autocom
 
 La comprobación online del 2 de octubre pasó con esa caché y rutas peatonales reales. Las consultas de renovación a Overpass desde Workers agotaron el tiempo; la disponibilidad futura depende del proveedor. Se mantiene frescura de seis horas y respaldo máximo de siete días con aviso.
 
-Resultados cercanos en tarjetas con tiempo/precio destacados y estado de compatibilidad. Mapa desplegable al final; «Ver en el mapa» abre el sitio. «Consultar reseñas en Google Maps» busca por nombre y dirección; puede requerir seleccionar el local correcto. Por decisión del usuario se mantiene coste cero: no se importan puntuaciones Google ni se habilita facturación.
+Resultados cercanos en tarjetas con tiempo/precio destacados y estado de compatibilidad. Mapa abierto junto al listado en escritorio y debajo en móvil; «Ver en el mapa» abre el sitio. «Consultar reseñas en Google Maps» busca por nombre y dirección; puede requerir seleccionar el local correcto. Por decisión del usuario se mantiene coste cero: no se importan puntuaciones Google ni se habilita facturación.
 
-«Localizar mi ubicación» solicita ubicación al navegador y la guarda como salida personal «Mi ubicación». El campo muestra sus coordenadas, sin inventar dirección postal ni seguimiento. Permiso denegado, posición no disponible o espera agotada conservan la salida anterior; puedes reintentar o ajustar el mapa.
+«Localizar mi ubicación» solicita ubicación al navegador y la guarda como salida personal «Mi ubicación». El campo muestra una dirección aproximada del portal más cercano (hasta 350 m), sin seguimiento. Las coordenadas se transmiten a CartoCiudad para obtenerla; no se sustituyen por las del portal. Permiso denegado, posición no disponible o espera agotada conservan la salida anterior; puedes reintentar o ajustar el mapa.
 
 ## Colaboración y administración
 
 El equipo podrá administrar código y despliegues mediante cuentas individuales. Guía: [COLABORACION](docs/COLABORACION.md). `node scripts/prepare-sharing.mjs` genera una copia revisada sin datos/secretos en data/share, sin publicarla. GitHub requiere una organización para varios administradores del repositorio. Invitaciones externas pendientes de identificar cuentas; no se han concedido permisos todavía.
+
 

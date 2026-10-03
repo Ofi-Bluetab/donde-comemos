@@ -71,3 +71,16 @@ export async function locateOffice(env,data,fail){
  const locations=results.map(r=>({address:String(r.address||'').slice(0,200),latitude:r.lat,longitude:r.lng})).filter(r=>validPoint(r)&&r.address);
  return {locations};
 }
+
+export async function reverseOffice(env,data,fail){
+ if(!validPoint(data))fail(400,'Ubicación no válida.');
+ const key=`reverse:${data.latitude.toFixed(6)}:${data.longitude.toFixed(6)}`;
+ const r=await cached(env,key,'cartociudad',async()=>{
+  const result=await remote(env,'https://www.cartociudad.es/geocoder/api/geocoder/reverseGeocode?'+new URLSearchParams({lat:data.latitude,lon:data.longitude}),{},fail,'CartoCiudad');
+  if(!result||typeof result!=='object'||Array.isArray(result))fail(503,'No se ha podido obtener la dirección.');
+  return result;
+ },fail);
+ const near={latitude:r.lat,longitude:r.lng};
+ const address=typeof r.address==='string'&&r.address.trim()&&validPoint(near)&&metres(data,near)<=350?[r.tip_via,r.address,r.portalNumber,r.muni||r.poblacion].filter(v=>v!==null&&v!==undefined&&v!=='').join(' ').slice(0,200):'';
+ return {address,approximate:true};
+}

@@ -23,9 +23,10 @@
 ## Datos y operación
 - No subas secretos, bases, respaldos, dependencias ni estado local a Git; respeta .gitignore y revisa archivos con scripts/prepare-sharing.mjs antes de compartirlos.
 - Conserva los binarios como binarios al cargar archivos; verifica sus hashes si usas APIs.
-- No recrees D1 ni cambies PASSWORD_PEPPER durante una actualización. No contrates servicios ni habilites planes de pago, APIs de pago o despliegues automáticos.
+- No recrees D1 ni cambies PASSWORD_PEPPER durante una actualización. No contrates servicios ni habilites planes de pago, APIs de pago ni pipelines programados de despliegue.
 - Verifica cuenta, repositorio, visibilidad y destino antes de escribir en servicios externos.
-- Publica o modifica producción solo con autorización explícita. Respeta la autorización ya concedida para la tarea y su alcance; no la extiendas a otros destinos o acciones.
+- Autorización persistente del usuario (2026-10-03): despliega los cambios de aplicación de este proyecto tras las comprobaciones, salvo que el usuario indique lo contrario. Incluye el cambio pendiente de ADR 0016. No vuelvas a pedir permiso para publicar en el Worker existente y su URL registrada en STATUS.md. Los cambios solo documentales se sincronizan en el repositorio, sin redeploy innecesario.
+- Antes de desplegar, verifica cuenta/destino, realiza respaldo según la guía y conserva D1/PASSWORD_PEPPER y plan Free. Esta autorización no cubre otros destinos, servicios de pago, borrados/restauraciones de datos, rotación de secretos ni ampliación de accesos. Si faltan credenciales o fallan comprobaciones, informa del bloqueo sin declarar el cambio publicado.
 - No inventes precios ni datos de proveedores. Mantén filtros estrictos y documenta fallos/antigüedad de caché.
 
 ## Verificación y cierre
@@ -35,3 +36,4 @@
 - Informa de fallos y verificaciones pendientes con precisión. Distingue pruebas previas, simuladas y ejecutadas en la tarea actual.
 - Para cambios relevantes, actualiza en orden: código/diseño → STATUS.md → NEXT_ACTIONS.md → CHANGELOG.md → AGENT_LOG.md.
 - Resume qué cambió, cómo se comprobó y qué queda pendiente. Usa commits claros, sin florituras.
+

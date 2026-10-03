@@ -3,7 +3,7 @@ let map,tiles,markers,officeMarker,point,chosen,rows=[],generation=0,officeGener
 export function invalidateNearby(){generation++;rows=[];$('#nearby-results').replaceChildren();$('#nearby-status').textContent='Selecciona los comensales y busca con sus filtros de hoy.';markers?.clearLayers();}
 export function syncOffice(office){
  const moved=!point||point.latitude!==office.latitude||point.longitude!==office.longitude;
- chosen=null;point=office;$('#office-address').value=office.address;$('#office-note').textContent=office.address?'Salida: '+office.address:'Tienes un punto guardado sin dirección. Localiza la oficina para comprobarlo.';$('#office-options').replaceChildren();$('#office-savepoint').hidden=true;
+ chosen=null;point=office;$('#office-address').value=office.address==='Mi ubicación'?`Mi ubicación · ${office.latitude.toFixed(5)}, ${office.longitude.toFixed(5)}`:office.address||`Punto guardado · ${office.latitude.toFixed(5)}, ${office.longitude.toFixed(5)}`;$('#office-note').textContent='Salida guardada. Puedes actualizar tu ubicación o ajustar el acceso en el mapa.';$('#office-savepoint').hidden=true;
  officeMarker?.setLatLng([office.latitude,office.longitude]);if(moved){invalidateNearby();map?.setView([office.latitude,office.longitude],16);}
 }
 function mapLoading(){tileErrors=0;loadedTiles=0;$('#nearby-map').classList.add('map-pending');$('#map-status').textContent='Cargando y comprobando el mapa…';$('#map-retry').hidden=true;}
@@ -15,7 +15,7 @@ export function showNearby(){
   tiles.on('loading',mapLoading);tiles.on('tileload',()=>loadedTiles++);tiles.on('tileerror',()=>tileErrors++);
   tiles.on('load',()=>{const ok=loadedTiles>0&&!tileErrors;$('#nearby-map').classList.toggle('map-pending',!ok);$('#map-status').textContent=ok?'Mapa cargado. El punto verde es la salida de la oficina.':'No se ha podido cargar el mapa completo. Puedes usar la lista y los enlaces de ruta o reintentar.';$('#map-retry').hidden=ok;});tiles.addTo(map);
   markers=L.layerGroup().addTo(map);officeMarker=L.circleMarker([point.latitude,point.longitude],{radius:10,color:'#244d3e',fillOpacity:1}).addTo(map).bindPopup('Salida de la oficina');
-  map.on('click',e=>{if(!point.address || $('#office-address').value!==point.address){$('#office-note').textContent='Localiza y confirma primero la nueva dirección.';return;}chosen={latitude:Number(e.latlng.lat.toFixed(6)),longitude:Number(e.latlng.lng.toFixed(6)),address:point.address};officeMarker.setLatLng(e.latlng);$('#office-note').textContent='Acceso pendiente de guardar.';$('#office-savepoint').hidden=false;invalidateNearby();});
+  map.on('click',e=>{chosen={latitude:Number(e.latlng.lat.toFixed(6)),longitude:Number(e.latlng.lng.toFixed(6)),address:point.address||'Mi ubicación'};officeMarker.setLatLng(e.latlng);$('#office-note').textContent='Acceso pendiente de guardar.';$('#office-savepoint').hidden=false;invalidateNearby();});
   new ResizeObserver(()=>map.invalidateSize()).observe($('#nearby-map'));
  }
  requestAnimationFrame(()=>map.invalidateSize());
@@ -25,29 +25,21 @@ export function setupNearby(api,action,load,getMembers,importRestaurant){
  $('#nearby-map-details').ontoggle=()=>{if($('#nearby-map-details').open)showNearby();};
  $('#map-retry').onclick=()=>{mapLoading();tiles?.redraw();};
  $('#office-geolocate').onclick=e=>action(e.currentTarget,async()=>{
-  const ticket=++officeGeneration;$('#office-options').replaceChildren();$('#office-note').textContent='Solicitando permiso para localizarte…';
+  const ticket=++officeGeneration;$('#office-note').textContent='Solicitando permiso para localizarte…';
   try{
-   if(!navigator.geolocation)throw new Error('Este navegador no permite obtener tu ubicación. Escribe una dirección y pulsa Buscar dirección escrita.');
+   if(!navigator.geolocation)throw new Error('Este navegador no permite obtener tu ubicación. Prueba con un navegador compatible.');
    const position=await new Promise((resolve,reject)=>navigator.geolocation.getCurrentPosition(resolve,reject,{enableHighAccuracy:true,timeout:15000,maximumAge:0}));
    if(ticket!==officeGeneration)return;
    const {latitude,longitude}=position.coords;
-   if(!Number.isFinite(latitude)||!Number.isFinite(longitude)||Math.abs(latitude)>85||Math.abs(longitude)>180)throw new Error('No se ha obtenido una ubicación válida. Usa la dirección escrita.');
-   await api('office',{latitude,longitude,address:'Mi ubicación'});invalidateNearby();await load();
+   if(!Number.isFinite(latitude)||!Number.isFinite(longitude)||Math.abs(latitude)>85||Math.abs(longitude)>180)throw new Error('No se ha obtenido una ubicación válida. Inténtalo de nuevo.');
+   const office={latitude,longitude,address:'Mi ubicación'};await api('office',office);syncOffice(office);invalidateNearby();await load();
    $('#office-note').textContent='Salida guardada: tu ubicación actual. Puedes ajustar el acceso en el mapa.';
-  }catch(error){if(ticket!==officeGeneration)return;const messages={1:'No has permitido el acceso a tu ubicación. Escribe una dirección o habilita el permiso del navegador.',2:'No se ha podido obtener tu ubicación. Escribe una dirección o inténtalo de nuevo.',3:'La localización ha tardado demasiado. Escribe una dirección o inténtalo de nuevo.'};const message=messages[error.code]||error.message;$('#office-note').textContent=message;throw new Error(message);}
+  }catch(error){if(ticket!==officeGeneration)return;const messages={1:'No has permitido el acceso a tu ubicación. Habilita el permiso del navegador e inténtalo de nuevo.',2:'No se ha podido obtener tu ubicación. Inténtalo de nuevo.',3:'La localización ha tardado demasiado. Inténtalo de nuevo.'};const message=messages[error.code]||error.message;$('#office-note').textContent=message;throw new Error(message);}
  });
- $('#office-form').oninput=()=>{officeGeneration++;chosen=null;$('#office-options').replaceChildren();$('#office-savepoint').hidden=true;$('#office-note').textContent='Dirección pendiente de localizar y confirmar.';invalidateNearby();};
  $('#nearby-radius').onchange=invalidateNearby;
- $('#office-form').onsubmit=e=>{e.preventDefault();action(e.submitter,async()=>{
-  const ticket=++officeGeneration;const address=$('#office-address').value.trim();$('#office-options').textContent='Localizando dirección…';
-  let data;try{data=await api('office/search',{address});}catch(error){$('#office-options').textContent=error.message;throw error;}if(ticket!==officeGeneration)return;
-  $('#office-options').replaceChildren();if(!data.locations.length){$('#office-options').textContent='No se ha encontrado esa dirección. Revisa calle, número y municipio.';return;}
-  const hint=document.createElement('p');hint.textContent='Confirma la dirección de salida:';$('#office-options').append(hint);
-  for(const location of data.locations){const button=document.createElement('button');button.type='button';button.className='address-option secondary';button.textContent='Usar '+location.address;button.onclick=()=>action(button,async()=>{if(ticket!==officeGeneration)return;await api('office',location);invalidateNearby();await load();showNearby();});$('#office-options').append(button);}
- });};
  $('#office-savepoint').onclick=e=>action(e.currentTarget,async()=>{if(!chosen)throw new Error('Marca el acceso en el mapa.');await api('office',chosen);invalidateNearby();await load();});
   $('#nearby-search').onclick=e=>action(e.currentTarget,async()=>{
-    if(!point.address || chosen || $('#office-address').value!==point.address)throw new Error('Localiza y confirma la dirección, o guarda el acceso ajustado, antes de buscar.');
+    if(chosen)throw new Error('Guarda el acceso ajustado antes de buscar.');
     if(!getMembers().length)throw new Error('Selecciona al menos una persona.');
     invalidateNearby();await load();const members=getMembers();if(!members.length)throw new Error('Selecciona al menos una persona.');const ticket=generation;$('#nearby-status').textContent='Buscando sitios y calculando recorridos a pie…';
     let data;try{data=await api('nearby',{members,radius:Number($('#nearby-radius').value)});}catch(error){$('#nearby-status').textContent=error.message;throw error;}

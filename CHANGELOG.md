@@ -66,3 +66,9 @@
 - Creado repositorio privado David-Fde/donde-comemos y cargados 70 archivos revisados en main; imágenes binarias preservadas. Sin producción ni permisos adicionales.
 
 - Añadido AGENTS.md para instrucciones persistentes. STATUS.md consolidado en estado vigente; contenido anterior conservado en AGENT_LOG.md. Sin cambios de aplicación ni producción.
+
+## 2026-10-03
+- ADR 0016: búsqueda escrita retirada, ubicación guardada visible en campo de solo lectura y actualización inmediata tras localizar. Conservados puntos guardados y ajuste en mapa; sin geocodificación inversa ni migraciones.
+
+- Publicado ADR 0016: versión 28b080ad-7b78-43ec-92d7-a4e06e6a5ec0. HTML/JS online comprobados; respaldo previo D1 y datos/secretos conservados.
+- Guardada autorización persistente de despliegue en AGENTS.md: cambios de aplicación comprobados se publican salvo instrucción contraria; documentación se sincroniza sin redeploy innecesario.

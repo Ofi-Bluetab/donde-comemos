@@ -23,3 +23,4 @@
 
 | [0014](docs/adr/0014-administracion-compartida.md) | Organización GitHub privada con Admin para colaboradores identificados, Cloudflare Administrator individual | Preparación local; altas pendientes de cuentas |
 | [0015](docs/adr/0015-github-personal.md) | Cuenta personal verificada David-Fde; repositorio privado previsto | Aceptada; supersede destino GitHub de 0014; creación pendiente |
+| [0016](docs/adr/0016-salida-ubicacion.md) | Salida visible de solo lectura y geolocalización; sin búsqueda escrita en UI | Aceptada; supersede alternativa manual de 0013 y entrada de 0010 |

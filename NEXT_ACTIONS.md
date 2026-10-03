@@ -10,12 +10,16 @@ Corrección publicada y migración 0005 aplicada. Mantener D1/PASSWORD_PEPPER y 
 
 - Recargar la versión visual y comparar tarjetas; enlaces de reseñas pueden requerir elegir la ficha Google correcta.
 
-- Recargar y probar Localizar dirección en el dispositivo propio; aceptar permiso si se desea usar ubicación. Alternativa Buscar dirección escrita.
+- Recargar y probar Localizar mi ubicación en el dispositivo propio; aceptar permiso si se desea usar ubicación. Campo de salida de solo lectura con coordenadas.
 
 - GitHub creado y cargado: https://github.com/David-Fde/donde-comemos (privado, main). Clonar en una carpeta nueva para continuar; mantener esta copia con sus datos locales.
 
 
-- Identificar colaboradores antes de invitarlos; varios Admin requieren organización. No hay despliegue automático.
+- Identificar colaboradores antes de invitarlos; varios Admin requieren organización. Sin pipeline programado; agente autorizado a desplegar cambios comprobados salvo instrucción contraria.
 
 
 - Abrir un chat nuevo en este proyecto y pedir: «Enumera los archivos de instrucciones que has cargado y resume sus reglas». Comprobar que incluye AGENTS.md de la raíz.
+
+
+- Recargar la aplicación publicada y comprobar Localizar mi ubicación desde el dispositivo propio. ADR 0016 desplegado; HTML/JS online comprobados y flujo probado con ubicación simulada.
+

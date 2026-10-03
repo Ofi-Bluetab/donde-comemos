@@ -52,3 +52,5 @@ No ejecutar `create-db`, `secrets` ni `prepare-production.mjs` como parte de una
 ## Destino vigente: cuenta personal (ADR 0015)
 
 Usar David-Fde (ID 54890715), verificada por perfil y login del conector el 2026-10-02. Preparar repositorio privado donde-comemos. La organización descrita arriba queda pendiente si se retoma el requisito de varios Admin. Crear repositorio vacío sin README/licencia/gitignore remotos y cargar solo la copia revisada. gh no instalado; conector sin creación de repositorios. No hay altas externas realizadas en esta intervención.
+
+Desde 2026-10-03 el usuario autoriza persistentemente desplegar cambios de aplicación comprobados en el Worker existente, salvo instrucción contraria. No requiere nueva confirmación por despliegue. Mantener respaldo, datos/secretos y Free; no equivale a habilitar Actions ni una tarea programada. Cambios exclusivamente documentales se sincronizan en GitHub.

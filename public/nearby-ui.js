@@ -1,3 +1,4 @@
+import {browserRestaurants} from './overpass.js';
 const $ = s=>document.querySelector(s);
 let map,tiles,markers,officeMarker,point,chosen,rows=[],generation=0,officeGeneration=0,loadedTiles=0,tileErrors=0,resolveSavedAddress;
 export function invalidateNearby(){generation++;rows=[];$('#nearby-results').replaceChildren();$('#nearby-status').textContent='Selecciona los comensales y busca con sus filtros de hoy.';markers?.clearLayers();}
@@ -49,7 +50,12 @@ export function setupNearby(api,action,load,getMembers,importRestaurant){
     if(chosen)throw new Error('Guarda el acceso ajustado antes de buscar.');
     if(!getMembers().length)throw new Error('Selecciona al menos una persona.');
     invalidateNearby();await load();const members=getMembers();if(!members.length)throw new Error('Selecciona al menos una persona.');const ticket=generation;$('#nearby-status').textContent='Buscando sitios y calculando recorridos a pie…';
-    let data;try{data=await api('nearby',{members,radius:Number($('#nearby-radius').value)});}catch(error){$('#nearby-status').textContent=error.message;throw error;}
+    let data;try{
+      const office={...point};let client_source;
+      try{client_source=await browserRestaurants(office);}catch{ /* The server may still have a usable cached response. */ }
+      if(ticket!==generation)return;
+      data=await api('nearby',{members,radius:Number($('#nearby-radius').value),...(client_source?{client_source}:{})});
+    }catch(error){$('#nearby-status').textContent=error.message;throw error;}
     if(ticket!==generation)return;
     $('#nearby-status').textContent=`${data.restaurants.length} compatibles con todos los seleccionados. Analizados ${data.examined} de ${data.total} sitios encontrados: hasta 30 próximos con cocina compatible. Tiempos estimados de ida, sin incluir comer. ${(data.warnings||[]).join(' ')}`;
     rows=[...data.restaurants,...data.pending];markers?.clearLayers();if(map&&rows.length)map.fitBounds(L.latLngBounds([point,...rows].map(r=>[r.latitude,r.longitude])),{padding:[30,30],maxZoom:16});$('#nearby-results').replaceChildren();

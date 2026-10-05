@@ -6,6 +6,23 @@ import {today, matchesFilters, emptyFilters} from '../public/filters.js';
 import worker from '../worker/index.js';
 import {passwordHash, verifyPassword, sha256} from '../worker/auth.js';
 import {recommendations} from '../worker/recommendations.js';
+import {fetchOverpass, defaultOffice} from '../worker/nearby.js';
+
+test('Overpass uses POST, recovers transport rejection, retries unavailable servers but never bypasses rate limits',async()=>{
+  const fail=(status,message,details)=>{throw Object.assign(new Error(message),{status,details});};
+  let calls=[];
+  const env={NEARBY_FETCH:async(url,options)=>{calls.push({url,options});return Response.json({elements:[]});}};
+  await fetchOverpass(env,defaultOffice,fail);
+  assert.equal(calls.length,1);assert.equal(calls[0].options.method,'POST');assert.ok(new URLSearchParams(calls[0].options.body).get('data').includes('around:2000'));
+  calls=[];env.NEARBY_FETCH=async(url,options)=>{calls.push({url,options});return calls.length===1?new Response('reject',{status:406}):Response.json({elements:[]});};
+  await fetchOverpass(env,defaultOffice,fail);assert.equal(calls.length,2);assert.ok(calls[1].url.startsWith(calls[0].url+'?data='));
+  calls=[];env.NEARBY_FETCH=async(url)=>{calls.push(url);return calls.length===1?new Response('unavailable',{status:503}):Response.json({elements:[]});};
+  await fetchOverpass(env,defaultOffice,fail);assert.equal(calls.length,2);assert.ok(calls[1].includes('private.coffee'));
+  calls=[];env.NEARBY_FETCH=async(url)=>{calls.push(url);return new Response('limited',{status:429});};
+  await assert.rejects(fetchOverpass(env,defaultOffice,fail),e=>e.details.upstream_status===429);assert.equal(calls.length,1);
+  calls=[];env.OVERPASS_URL='https://custom.example.test/interpreter';env.NEARBY_FETCH=async(url)=>{calls.push(url);throw Error('offline');};
+  await assert.rejects(fetchOverpass(env,defaultOffice,fail));assert.deepEqual(calls,[env.OVERPASS_URL]);
+});
 
 // Adapter executes the production SQL against SQLite, matching the D1 methods used.
 function fixture(beforeGroups) {
@@ -36,6 +53,21 @@ function fixture(beforeGroups) {
   }
   return {database,env,request};
 }
+
+test('browser restaurant sources never trust prices or times and never populate shared OSM cache',async()=>{
+  const f=fixture();try{
+    const a=await f.request('/api/register',{name:'Client',email:'client@example.test',password:'test-password'});
+    const uid=(await f.request('/api/state',undefined,a.cookie)).body.user.id;
+    const source={elements:[{type:'node',id:999,lat:40.4501,lon:-3.6938,tags:{name:'Source',cuisine:'japanese'},price:1,minutes:0}]};
+    await f.request('/api/filters',{max_minutes:5,max_price:10,cuisine:'Asiática'},a.cookie);
+    f.env.NEARBY_FETCH=async url=>{assert.ok(url.includes('/foot/'));return Response.json({code:'Ok',durations:[[120]],sources:[{distance:0}],destinations:[{distance:0}]});};
+    const data={members:[uid],radius:500,client_source:source};
+    const r=await f.request('/api/nearby',data,a.cookie);assert.equal(r.status,200);assert.equal(r.body.restaurants.length,0);assert.equal(r.body.pending[0].price,null);assert.equal(r.body.pending[0].minutes,2);
+    assert.equal(f.database.prepare("SELECT COUNT(*) n FROM nearby_cache WHERE cache_key LIKE 'osm-get:%'").get().n,0);
+    for(const client_source of [{elements:[{...source.elements[0],lat:0}]},{elements:[{...source.elements[0],id:'bad'}]},{elements:[],remark:'partial'}])assert.equal((await f.request('/api/nearby',{...data,client_source},a.cookie)).status,400);
+    assert.equal((await f.request('/api/nearby',data)).status,401);
+  }finally{f.database.close();}
+});
 
 test('restaurant deletion requires authentication and origin, removes all ratings and preserves other data', async () => {
   const f=fixture();try {

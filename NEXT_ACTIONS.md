@@ -2,7 +2,7 @@
 
 1. Recargar la aplicación, localizar y confirmar la dirección desde «Cerca de la oficina»; ajustar el acceso si hace falta.
 2. Confirmar precios de candidatos pendientes y usar «Completar y guardar» para añadir restaurantes al catálogo y valorarlos.
-3. Comprobar la renovación directa cuando Overpass vuelva a responder; los tres radios ya pasaron online con caché reciente y rutas reales. No hay monitor ni tarea periódica.
+3. Recargar y repetir la búsqueda desde el dispositivo propio. El flujo navegador/servidor pasó online en tres radios el 2026-10-05. Proveedores gratuitos sin garantía; no hay monitor ni tarea periódica.
 4. Revisar cuotas Free y disponibilidad comunitaria durante el piloto.
 5. Solo si se solicita: restringir ALLOWED_EMAILS o automatizar respaldos externos gratuitos.
 

@@ -1,10 +1,11 @@
 import {today, matchesFilters, normalizeCuisine} from '../public/filters.js';
+import {overpassQuery} from '../public/overpass.js';
+export {overpassQuery} from '../public/overpass.js';
 
 export const defaultOffice = {latitude:40.45002533227958,longitude:-3.693875262562316,address:'Plaza de Pablo Ruiz Picasso, 11, Madrid',source:'CartoCiudad (IGN/CNIG)'};
 export async function officeFor(env,user){const office=await q(env,'SELECT latitude,longitude,address FROM office_locations WHERE user_id=?',user.id).first();return office||defaultOffice;}
 export function metres(a,b){const radians=Math.PI/180,dlat=(b.latitude-a.latitude)*radians,dlon=(b.longitude-a.longitude)*radians,h=Math.sin(dlat/2)**2+Math.cos(a.latitude*radians)*Math.cos(b.latitude*radians)*Math.sin(dlon/2)**2;return 12742000*Math.asin(Math.min(1,Math.sqrt(h)));}
 export const validPoint = p => typeof p.latitude === 'number' && Number.isFinite(p.latitude) && Math.abs(p.latitude)<=85 && typeof p.longitude === 'number' && Number.isFinite(p.longitude) && Math.abs(p.longitude)<=180;
-export const overpassQuery = office => `[out:json][timeout:10][maxsize:33554432];nwr(around:2000,${office.latitude},${office.longitude})[amenity=restaurant][name];out tags center;`;
 const q = (env,sql,...args) => env.DB.prepare(sql).bind(...args);
 export function cuisines(value='') {
   const aliases={asian:'Asiática',japanese:'Asiática',chinese:'Asiática',thai:'Asiática',korean:'Asiática',vietnamese:'Asiática',indian:'Asiática',ramen:'Asiática',sushi:'Asiática',italian:'Italiana',pizza:'Italiana',spanish:'Española',mediterranean:'Mediterránea',mexican:'Mexicana',burger:'Hamburguesas',regional:'Casera'};
@@ -28,12 +29,31 @@ async function cached(env,key,provider,task,fail,warnings=[]) {
 async function remote(env,url,options,fail,label) {
   let upstreamStatus;
   try {
-    const response=await (env.NEARBY_FETCH || fetch)(url,{...options,headers:{'User-Agent':'DondeComemos/0.2 (+https://donde-comemos.mesa-equipo-dfv.workers.dev)','Accept':'application/json','Referer':'https://donde-comemos.mesa-equipo-dfv.workers.dev/',...options?.headers},signal:AbortSignal.timeout(label==='Overpass'?35000:25000)});
+    const response=await (env.NEARBY_FETCH || fetch)(url,{...options,headers:{'User-Agent':'DondeComemos/0.2 (+https://donde-comemos.mesa-equipo-dfv.workers.dev)','Accept':'application/json','Referer':'https://donde-comemos.mesa-equipo-dfv.workers.dev/',...options?.headers},signal:AbortSignal.timeout(label==='Overpass'?18000:25000)});
     upstreamStatus=response.status;
     if(!response.ok){console.warn('Proveedor externo',label,response.status);throw new Error('provider');}
     const text=await response.text();if(text.length>2000000)throw new Error('size');
     return JSON.parse(text);
   } catch (error) {fail(503,label==='CartoCiudad'?'No se puede localizar la dirección ahora. Inténtalo de nuevo; la salida guardada se conserva.':label==='Overpass'?'No se pueden consultar restaurantes ahora. Inténtalo de nuevo; tu catálogo sigue disponible.':'No se pueden calcular las rutas a pie ahora. Inténtalo de nuevo; tu catálogo sigue disponible.',{provider:label,upstream_status:upstreamStatus??null,upstream_error:error.name});}
+}
+export async function fetchOverpass(env,office,fail) {
+  const endpoints=env.OVERPASS_URL?[env.OVERPASS_URL]:['https://overpass-api.de/api/interpreter','https://overpass.private.coffee/api/interpreter'];
+  const body=new URLSearchParams({data:overpassQuery(office)}).toString();
+  for(let i=0;i<endpoints.length;i++) {
+    try {
+      let result;
+      try {result=await remote(env,endpoints[i],{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body},fail,'Overpass');}
+      catch(error) {
+        if(error.details?.upstream_status!==406)throw error;
+        result=await remote(env,endpoints[i]+'?'+body,{},fail,'Overpass');
+      }
+      if(!Array.isArray(result.elements)||result.remark)fail(503,'La fuente de restaurantes ha devuelto datos incompletos. Inténtalo de nuevo.',{provider:'Overpass',upstream_status:null});
+      return result;
+    }catch(error) {
+      const status=error.details?.upstream_status;
+      if(i===endpoints.length-1||error.status!==503||status!==null&&status!==undefined&&status<500)throw error;
+    }
+  }
 }
 export async function nearby(env,user,data,permitted,fail) {
   if(!Array.isArray(data.members)||!data.members.length||data.members.length>100||data.members.some(id=>!Number.isInteger(id)))fail(400,'Selecciona al menos un compañero.');
@@ -44,11 +64,10 @@ export async function nearby(env,user,data,permitted,fail) {
   const radius=Number(data.radius);if(![500,1000,2000].includes(radius))fail(400,'Elige un radio de 500, 1000 o 2000 metros.');
   const origin=[office.latitude,office.longitude].map(n=>n.toFixed(6)).join(':');
   const key=`osm-get:${origin}:2000`;
-  const raw=await cached(env,key,'overpass',async()=>{
-    const url=(env.OVERPASS_URL||'https://overpass-api.de/api/interpreter')+'?'+new URLSearchParams({data:overpassQuery(office)});
-    const result=await remote(env,url,{},fail,'Overpass');
-    if(!Array.isArray(result.elements)||result.remark)fail(503,'La fuente de restaurantes ha devuelto datos incompletos. Inténtalo de nuevo.');
-    return result;
+  if(data.client_source && (!Array.isArray(data.client_source.elements)||data.client_source.elements.length>2000||data.client_source.remark||data.client_source.elements.some(e=>!e||!['node','way','relation'].includes(e.type)||!Number.isSafeInteger(e.id)||e.id<=0||!validPoint({latitude:e.lat,longitude:e.lon})||metres(office,{latitude:e.lat,longitude:e.lon})>2100||!e.tags||typeof e.tags.name!=='string'||e.tags.name.length>200||['cuisine','addr:street','addr:housenumber'].some(k=>e.tags[k]!==undefined&&(typeof e.tags[k]!=='string'||e.tags[k].length>200)))))fail(400,'Datos de restaurantes no válidos. Vuelve a buscar.');
+  // Browser data is untrusted: never publish it in the shared provider cache.
+  const raw=data.client_source || await cached(env,key,'overpass',async()=>{
+    return fetchOverpass(env,office,fail);
   },fail,warnings);
   const candidates=raw.elements.map(e=>{const local=saved.results.find(r=>r.external_id===`${e.type}/${e.id}`);const latitude=e.lat??e.center?.lat,longitude=e.lon??e.center?.lon;return {external_id:`${e.type}/${e.id}`,latitude,longitude,name:String(e.tags?.name||'').slice(0,200),cuisine:local?.cuisine||cuisines(e.tags?.cuisine).find(c=>['Asiática','Italiana','Española','Mediterránea','Mexicana','Hamburguesas','Casera'].includes(c))||e.tags?.cuisine||'',cuisines:local?[local.cuisine]:cuisines(e.tags?.cuisine),price:local?.price??null,id:local?.id??null,address:local?.address||[e.tags?.['addr:street'],e.tags?.['addr:housenumber']].filter(Boolean).join(' ').slice(0,200)};}).filter(r=>validPoint(r)&&r.name&&metres(office,r)<=radius);
   candidates.sort((a,b)=>metres(office,a)-metres(office,b)||a.external_id.localeCompare(b.external_id));

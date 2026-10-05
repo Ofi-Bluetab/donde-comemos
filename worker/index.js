@@ -22,7 +22,7 @@ function secureResponse(response, request) {
   copy.headers.set('X-Content-Type-Options', 'nosniff');
   copy.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
   copy.headers.set('X-Frame-Options', 'DENY');
-  copy.headers.set('Content-Security-Policy', "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: https://tile.openstreetmap.org; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'");
+  copy.headers.set('Content-Security-Policy', "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: https://tile.openstreetmap.org; connect-src 'self' https://overpass-api.de https://overpass.private.coffee; frame-ancestors 'none'; base-uri 'self'; form-action 'self'");
   if (new URL(request.url).protocol === 'https:') copy.headers.set('Strict-Transport-Security', 'max-age=31536000');
   return copy;
 }
@@ -34,9 +34,9 @@ async function currentUser(request, env) {
   return user && permitted(env, user.email) ? user : null;
 }
 
-async function readBody(request) {
+async function readBody(request, limit=16384) {
   if (!request.headers.get('Content-Type')?.toLowerCase().startsWith('application/json')) fail(415, 'La solicitud debe usar JSON.');
-  if (Number(request.headers.get('Content-Length')) > 16384) fail(413, 'Solicitud demasiado grande.');
+  if (Number(request.headers.get('Content-Length')) > limit) fail(413, 'Solicitud demasiado grande.');
   const reader = request.body?.getReader();
   if (!reader) fail(400, 'Solicitud vacía.');
   const chunks = []; let size = 0;
@@ -44,7 +44,7 @@ async function readBody(request) {
     const {done, value} = await reader.read();
     if (done) break;
     size += value.byteLength;
-    if (size > 16384) {await reader.cancel(); fail(413, 'Solicitud demasiado grande.');}
+    if (size > limit) {await reader.cancel(); fail(413, 'Solicitud demasiado grande.');}
     chunks.push(value);
   }
   const bytes = new Uint8Array(size); let offset = 0;
@@ -113,7 +113,7 @@ async function handle(request, env) {
   if (request.method !== 'POST') fail(404, 'Ruta no encontrada.');
   const origin = request.headers.get('Origin');
   if ((origin && origin !== new URL(request.url).origin) || request.headers.get('Sec-Fetch-Site') === 'cross-site') fail(403, 'Origen no permitido.');
-  const data = await readBody(request);
+  const data = await readBody(request,path==='/api/nearby'?512000:16384);
   if (['/api/register','/api/login'].includes(path)) return authenticate(path, request, env, data);
   const user = await currentUser(request, env);
   if (!user) fail(401, 'Inicia sesión para continuar.');

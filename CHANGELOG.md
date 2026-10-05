@@ -78,3 +78,5 @@
 2026-10-03: limpieza de datos de producción solicitada para iniciar la primera versión funcional: usuarios, restaurantes, notas, sesiones, filtros, ubicaciones, grupos históricos, intentos y caché vacíos. Estructura y secretos intactos; sin redeploy de código.
 
 2026-10-05: opción Eliminar con confirmación por restaurante del catálogo compartido. Endpoint autenticado, validación de origen e ID; notas retiradas en cascada. Publicada 6942a7f9-1b77-4284-9884-f129273224ad.
+
+2026-10-05: corregida búsqueda mediante consulta OSM desde navegador (POST/alternativa GET) y cálculo/validación en servidor. Respaldo API ante fallo del navegador. Prueba remota de tres radios y UI publicada: 28 sitios dentro de 10 min en oficina pública de prueba. Cuenta QA retirada. Versión 06977dbc-da45-4490-b447-8cc6af038dcf.

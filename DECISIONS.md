@@ -26,3 +26,4 @@
 | [0016](docs/adr/0016-salida-ubicacion.md) | Salida visible de solo lectura y geolocalización; sin búsqueda escrita en UI | Aceptada; supersede alternativa manual de 0013 y entrada de 0010 |
 | [0017](docs/adr/0017-direccion-mapa-lateral.md) | Dirección aproximada CartoCiudad y mapa abierto junto al listado | Aceptada; supersede presentación de 0016/0012 |
 | [0018](docs/adr/0018-eliminar-restaurantes.md) | Eliminar restaurantes y notas del catálogo común con confirmación | Aceptada |
+| [0019](docs/adr/0019-consulta-overpass-resiliente.md) | Consulta OSM desde navegador; servidor valida filtros, precios y rutas | Publicada; supersede transporte de 0010 y amplía 0011 |

@@ -1,7 +1,7 @@
 // Prepare public OSM cache only; apply the generated SQL explicitly to the intended D1.
 import {readFileSync, readdirSync, writeFileSync} from 'node:fs';
 import {DatabaseSync} from 'node:sqlite';
-import {defaultOffice, overpassQuery} from '../worker/nearby.js';
+import {defaultOffice, fetchOverpass} from '../worker/nearby.js';
 
 const key='osm-get:'+ [defaultOffice.latitude,defaultOffice.longitude].map(n=>n.toFixed(6)).join(':')+':2000';
 let source;
@@ -15,10 +15,8 @@ if(process.argv.includes('--from-local-cache')) {
   if(!source)throw Error('No hay caché pública fresca de la oficina; no se cambia su fecha.');
 } else {
   const config=JSON.parse(readFileSync('wrangler.jsonc','utf8'));
-  const endpoint=config.vars.OVERPASS_URL || 'https://overpass-api.de/api/interpreter';
-  const response=await fetch(endpoint+'?'+new URLSearchParams({data:overpassQuery(defaultOffice)}),{headers:{Accept:'application/json','User-Agent':'DondeComemos/0.2 (+https://donde-comemos.mesa-equipo-dfv.workers.dev)'},signal:AbortSignal.timeout(35000)});
-  if(!response.ok)throw Error('Overpass '+response.status);
-  source={payload:JSON.stringify(await response.json()),expires:Date.now()+21600000};
+  const fail=(status,message,details)=>{throw Object.assign(new Error(message),{status,details});};
+  source={payload:JSON.stringify(await fetchOverpass(config.vars,defaultOffice,fail)),expires:Date.now()+21600000};
 }
 const raw=JSON.parse(source.payload);
 if(!Array.isArray(raw.elements)||raw.remark)throw Error('Respuesta pública incompleta.');

@@ -29,3 +29,5 @@
 - Dirección inversa CartoCiudad es aproximada (portal más cercano hasta 350 m); puede no identificar el acceso exacto ni estar disponible fuera de España. Se conserva el punto GPS y se informa si falta dirección. Coordenadas enviadas a CartoCiudad al resolverla, sin nombres/correos/notas.
 
 - Eliminación colaborativa: cualquier cuenta autorizada puede borrar restaurantes y todas sus notas, con confirmación. No hay papelera. Puede reaparecer en descubrimientos OSM sin precio/notas guardadas.
+
+- ADR0019: UI evita timeouts de Overpass desde Cloudflare consultando desde navegador. CORS, bloqueadores o red del dispositivo pueden impedirlo; API/caché actúa de alternativa. Solo coordenadas de origen al proveedor; sin cookies/cuentas/filtros. Datos cliente no certificados ni compartidos: cliente modificado puede alterar sus propios nombres/resultados, nunca precios guardados/tiempos de ruta/filtros de servidor. Consulta limitada a acción explícita; memoria6h/8puntos por pestaña, sin sincronización global del ritmo de peticiones entre navegadores.

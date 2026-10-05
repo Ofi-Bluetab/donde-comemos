@@ -18,3 +18,5 @@ nav{flex-wrap:wrap;gap:20px}#nearby-map{height:350px;border-radius:16px;margin-t
 @media(max-width:700px){.nearby-layout{grid-template-columns:1fr}#nearby-map-details{position:static}#nearby-map{height:340px}#office-form{padding:16px}.nearby-card h4{font-size:19px}}
 
 .delete-restaurant{color:#9b342b;margin-top:8px}
+
+.restaurant-popup{min-width:170px;max-width:240px;overflow-wrap:anywhere}.restaurant-popup>strong{font-size:16px;color:var(--green)}.restaurant-popup p{margin:8px 0;line-height:1.4}.restaurant-popup a{display:block;margin-top:10px;color:var(--green)}.restaurant-popup .secondary{width:100%;padding:10px;font-size:12px}.nearby-card:focus{outline:3px solid #2563eb;outline-offset:3px}

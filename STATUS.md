@@ -5,7 +5,7 @@ Actualizado: 2026-10-05. Historial en AGENT_LOG.md y CHANGELOG.md.
 ## Aplicación
 - Cloudflare Workers + D1, plan Free, presupuesto cero.
 - URL: https://donde-comemos.mesa-equipo-dfv.workers.dev
-- Última versión publicada: 06977dbc-da45-4490-b447-8cc6af038dcf (ADR 0019).
+- Última versión publicada: 09ba8d53-9045-408b-b4fa-ac869750796d (fichas del mapa y salida azul).
 - Registro libre, catálogo común y participantes de cada comida; notas personales y filtros diarios Europe/Madrid. Sin grupos persistentes activos.
 - Eliminar en tarjetas con confirmación retira restaurante y notas de todos los usuarios (ADR 0018).
 - Cercanos: consulta OSM/Overpass desde navegador; API valida elementos, filtros estrictos, precios del catálogo y rutas FOSSGIS. Fuente cliente no crea restaurantes ni entra en caché compartida.
@@ -27,3 +27,5 @@ Actualizado: 2026-10-05. Historial en AGENT_LOG.md y CHANGELOG.md.
 - Datos, respaldos, secretos y dependencias excluidos de copia compartida. Sin invitaciones ni Actions.
 - Autorización persistente: desplegar cambios comprobados en Worker existente salvo instrucción contraria; documentación sola sin redeploy. Regla en AGENTS.md.
 - Sin recuperación de contraseña/verificación email, respaldo diario externo, monitor periódico ni pipeline. Más límites en RISKS.md.
+
+Mapa: fichas emergentes con nombre/cocina/dirección/tiempo/precio/estado y enlaces a ruta, reseñas y listado. Origen azul con borde blanco, locales verdes/pendientes ámbar. QA local real: popup desde tarjeta y marcador, retorno a listado y origen sin mover al pulsar local. Doce tests/check/sintaxis/build OK; assets y salud online verificados. Respaldo data/backups/d1-20261005-094828.sql; sin mutaciones QA remotas.

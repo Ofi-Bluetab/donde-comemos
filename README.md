@@ -71,3 +71,5 @@ El equipo podrá administrar código y despliegues mediante cuentas individuales
 
 
 Eliminar restaurantes: pulsa Eliminar en la tarjeta y confirma. Se retira del catálogo compartido y se borran las valoraciones de todos los usuarios. Cualquier cuenta conectada autorizada puede hacerlo. Un sitio público puede reaparecer en cercanos y añadirse otra vez sin sus notas anteriores.
+
+Mapa: pulsa un restaurante para abrir su ficha con nombre, cocina, dirección disponible, tiempo y precio conocido, enlaces a ruta/reseñas y su tarjeta. Tu salida es azul con borde blanco; restaurantes verdes y pendientes de presupuesto ámbar. Pulsar un local no cambia la salida.

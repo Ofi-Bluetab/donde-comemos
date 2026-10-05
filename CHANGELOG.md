@@ -76,3 +76,5 @@
 - ADR 0017 publicado (2ed696b6-7190-4336-b957-7b84d1dbd8c7): dirección aproximada del portal más cercano sin sustituir GPS, mapa abierto lateral, tarjetas compactas y móvil apilado. Sin búsqueda escrita ni migración.
 
 2026-10-03: limpieza de datos de producción solicitada para iniciar la primera versión funcional: usuarios, restaurantes, notas, sesiones, filtros, ubicaciones, grupos históricos, intentos y caché vacíos. Estructura y secretos intactos; sin redeploy de código.
+
+2026-10-05: opción Eliminar con confirmación por restaurante del catálogo compartido. Endpoint autenticado, validación de origen e ID; notas retiradas en cascada. Publicada 6942a7f9-1b77-4284-9884-f129273224ad.

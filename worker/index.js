@@ -141,6 +141,12 @@ async function handle(request, env) {
       ON CONFLICT(user_id) DO UPDATE SET day=excluded.day,max_minutes=excluded.max_minutes,max_price=excluded.max_price,cuisine=excluded.cuisine`, user.id,day,max_minutes,max_price,cuisine.trim()).run();
     return json(200, {ok:true, day});
   }
+  if (path === '/api/restaurants/delete') {
+    if (!Number.isSafeInteger(data.restaurant_id) || data.restaurant_id <= 0) fail(400, 'Selecciona un restaurante válido.');
+    const deleted = await query(env, 'DELETE FROM restaurants WHERE id=? RETURNING id', data.restaurant_id).first();
+    if (!deleted) fail(404, 'El restaurante ya no existe.');
+    return json(200, {ok:true});
+  }
   if (path === '/api/restaurants') {
     const name = typeof data.name === 'string' ? data.name.trim() : '';
     const cuisine = typeof data.cuisine === 'string' ? data.cuisine.trim() : '';

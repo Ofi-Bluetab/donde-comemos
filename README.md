@@ -69,3 +69,5 @@ Resultados cercanos en tarjetas con tiempo/precio destacados y estado de compati
 El equipo podrá administrar código y despliegues mediante cuentas individuales. Guía: [COLABORACION](docs/COLABORACION.md). `node scripts/prepare-sharing.mjs` genera una copia revisada sin datos/secretos en data/share, sin publicarla. GitHub requiere una organización para varios administradores del repositorio. Invitaciones externas pendientes de identificar cuentas; no se han concedido permisos todavía.
 
 
+
+Eliminar restaurantes: pulsa Eliminar en la tarjeta y confirma. Se retira del catálogo compartido y se borran las valoraciones de todos los usuarios. Cualquier cuenta conectada autorizada puede hacerlo. Un sitio público puede reaparecer en cercanos y añadirse otra vez sin sus notas anteriores.

@@ -16,3 +16,5 @@ nav{flex-wrap:wrap;gap:20px}#nearby-map{height:350px;border-radius:16px;margin-t
 #nearby-map-details{position:sticky;top:20px;margin:0;padding:16px;border:1px solid var(--border);border-radius:16px;background:white;min-width:0}#nearby-map-details h3{margin:0 0 12px;font-size:17px}#nearby-map{height:clamp(360px,60vh,600px)}#nearby-results h3:first-child{margin-top:0}
 @media(max-width:1100px){.layout:has(#nearby-panel:not([hidden])){grid-template-columns:1fr}.nearby-layout{grid-template-columns:minmax(0,1fr) minmax(280px,.8fr)}}
 @media(max-width:700px){.nearby-layout{grid-template-columns:1fr}#nearby-map-details{position:static}#nearby-map{height:340px}#office-form{padding:16px}.nearby-card h4{font-size:19px}}
+
+.delete-restaurant{color:#9b342b;margin-top:8px}

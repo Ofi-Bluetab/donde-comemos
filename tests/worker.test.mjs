@@ -37,6 +37,27 @@ function fixture(beforeGroups) {
   return {database,env,request};
 }
 
+test('restaurant deletion requires authentication and origin, removes all ratings and preserves other data', async () => {
+  const f=fixture();try {
+    const a=await f.request('/api/register',{name:'Delete A',email:'delete-a@example.test',password:'test-password'});
+    const b=await f.request('/api/register',{name:'Delete B',email:'delete-b@example.test',password:'test-password'});
+    for(const name of ['Eliminar','Conservar'])await f.request('/api/restaurants',{name,cuisine:'Casera',price:15,minutes:5},a.cookie);
+    const rows=(await f.request('/api/state',undefined,a.cookie)).body.restaurants;
+    const id=rows[0].id,keep=rows[1].id;
+    for(const cookie of [a.cookie,b.cookie])for(const restaurant_id of [id,keep])await f.request('/api/ratings',{restaurant_id,quality:5,service:4,value:3,distance:2},cookie);
+    assert.equal((await f.request('/api/restaurants/delete',{restaurant_id:id})).status,401);
+    assert.equal((await f.request('/api/restaurants/delete',{restaurant_id:id},a.cookie,{Origin:'https://evil.test'})).status,403);
+    for(const restaurant_id of [null,0,-1,1.5,'1'])assert.equal((await f.request('/api/restaurants/delete',{restaurant_id},a.cookie)).status,400);
+    assert.equal((await f.request('/api/restaurants/delete',{restaurant_id:id},b.cookie)).status,200);
+    assert.equal((await f.request('/api/restaurants/delete',{restaurant_id:id},b.cookie)).status,404);
+    assert.equal(f.database.prepare('SELECT COUNT(*) n FROM ratings WHERE restaurant_id=?').get(id).n,0);
+    assert.equal(f.database.prepare('SELECT COUNT(*) n FROM ratings WHERE restaurant_id=?').get(keep).n,2);
+    for(const cookie of [a.cookie,b.cookie])assert.deepEqual((await f.request('/api/state',undefined,cookie)).body.restaurants.map(r=>r.id),[keep]);
+    const uid=(await f.request('/api/state',undefined,a.cookie)).body.user.id;
+    assert.deepEqual((await f.request('/api/recommendations',{members:[uid]},a.cookie)).body.recommendations.map(r=>r.id),[keep]);
+  }finally{f.database.close();}
+});
+
 test('private accounts, shared catalogue, isolated ratings, recommendations and revoked session', async () => {
   const f = fixture();
   try {

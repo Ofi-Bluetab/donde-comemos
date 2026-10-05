@@ -27,3 +27,5 @@ Corrección publicada y migración 0005 aplicada. Mantener D1/PASSWORD_PEPPER. D
 
 - Recargar ADR 0017 y comprobar dirección aproximada en el dispositivo propio. Si falta dirección, reintentar Localizar mi ubicación; proveedor comunitario sin garantía, punto guardado se conserva.
 
+
+- Recargar la aplicación para ver Eliminar en las tarjetas; confirmar solo cuando se quiera retirar el restaurante y todas sus valoraciones.

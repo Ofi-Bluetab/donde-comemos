@@ -50,13 +50,15 @@ La versión Python anterior (server.py, render.yaml, tests Python y data/) se co
 
 El plan Free tiene cuotas; alcanzar sus límites puede interrumpir solicitudes. No habilitar upgrades. Fuentes: https://developers.cloudflare.com/workers/platform/pricing/ y https://developers.cloudflare.com/d1/platform/pricing/.
 
-Verificación de cercanos: `node tests/smoke-nearby.mjs` contra local, o URL publicada como argumento para QA remoto explícito. Crea una cuenta temporal; SQL de limpieza exacta en data/cleanup-nearby.sql (ejecutar en el mismo destino). No modifica catálogo/notas. Local y remoto completados con proveedores reales; QA remota retirada. UI de mapa, precios pendientes, formulario y ancho móvil verificados.
+Verificación de cercanos: 
+ode tests/smoke-nearby.mjs` contra local, o URL publicada como argumento para QA remoto explícito. Crea una cuenta temporal; SQL de limpieza exacta en data/cleanup-nearby.sql (ejecutar en el mismo destino). No modifica catálogo/notas. Local y remoto completados con proveedores reales; QA remota retirada. UI de mapa, precios pendientes, formulario y ancho móvil verificados.
 
 Direcciones de España: CartoCiudad (IGN/CNIG), búsqueda explícita sin autocompletado, sin clave ni facturación. La dirección consultada se transmite solo al geocodificador; no se envían nombres/correos/notas. Overpass se consulta desde el navegador por POST, con alternativa GET ante rechazo de transporte; si falla, la API intenta sus proveedores/caché existentes. El servidor valida los elementos y aplica precios del catálogo, filtros y rutas. Los elementos recibidos del navegador no se incorporan a la caché compartida; un radio máximo compartido de 2 km se filtra geográficamente para reutilizar la fuente entre radios. No se cachean errores o respuestas parciales. El mapa espera teselas visibles sin fallos antes de mostrarse, detecta errores y permite reintento; la lista y rutas siguen utilizables. «Ruta en Google Maps» abre un enlace sin clave; no extrae datos ni usa APIs Google. No se garantiza disponibilidad futura de proveedores comunitarios.
 
 ### Preparar una caché pública de la oficina
 
-`node scripts/prepare-office-cache.mjs` consulta la fuente pública y prepara `data/public-office-cache.sql`. `--from-local-cache` reutiliza únicamente una respuesta local todavía fresca, conservando su caducidad original. El script no escribe en D1 remoto ni copia cuentas, precios o notas. Tras revisar la fuente y autorizar la operación, `wrangler d1 execute comemos --remote --file data/public-office-cache.sql` incorpora esa respuesta a la caché existente. No hay tarea periódica.
+
+ode scripts/prepare-office-cache.mjs` consulta la fuente pública y prepara `data/public-office-cache.sql`. `--from-local-cache` reutiliza únicamente una respuesta local todavía fresca, conservando su caducidad original. El script no escribe en D1 remoto ni copia cuentas, precios o notas. Tras revisar la fuente y autorizar la operación, `wrangler d1 execute comemos --remote --file data/public-office-cache.sql` incorpora esa respuesta a la caché existente. No hay tarea periódica.
 
 La comprobación online del 2 de octubre pasó con esa caché y rutas peatonales reales. Las consultas de renovación a Overpass desde Workers agotaron el tiempo; la disponibilidad futura depende del proveedor. Se mantiene frescura de seis horas y respaldo máximo de siete días con aviso.
 
@@ -66,10 +68,13 @@ Resultados cercanos en tarjetas con tiempo/precio destacados y estado de compati
 
 ## Colaboración y administración
 
-El equipo podrá administrar código y despliegues mediante cuentas individuales. Guía: [COLABORACION](docs/COLABORACION.md). `node scripts/prepare-sharing.mjs` genera una copia revisada sin datos/secretos en data/share, sin publicarla. GitHub requiere una organización para varios administradores del repositorio. Invitaciones externas pendientes de identificar cuentas; no se han concedido permisos todavía.
+El equipo podrá administrar código y despliegues mediante cuentas individuales. Guía: [COLABORACION](docs/COLABORACION.md). 
+ode scripts/prepare-sharing.mjs` genera una copia revisada sin datos/secretos en data/share, sin publicarla. GitHub requiere una organización para varios administradores del repositorio. Invitaciones externas pendientes de identificar cuentas; no se han concedido permisos todavía.
 
 
 
 Eliminar restaurantes: pulsa Eliminar en la tarjeta y confirma. Se retira del catálogo compartido y se borran las valoraciones de todos los usuarios. Cualquier cuenta conectada autorizada puede hacerlo. Un sitio público puede reaparecer en cercanos y añadirse otra vez sin sus notas anteriores.
 
 Mapa: pulsa un restaurante para abrir su ficha con nombre, cocina, dirección disponible, tiempo y precio conocido, enlaces a ruta/reseñas y su tarjeta. Tu salida es azul con borde blanco; restaurantes verdes y pendientes de presupuesto ámbar. Pulsar un local no cambia la salida.
+
+Añadir por nombre: en Añadir restaurante escribe al menos dos caracteres y pulsa Buscar nombre en el mapa. Busca hasta 2 km de tu salida; pulsa un marcador para completar datos disponibles, confirma precio/campos y usa Añadir este local en su ficha. El alta manual sigue disponible.

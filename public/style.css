@@ -20,3 +20,5 @@ nav{flex-wrap:wrap;gap:20px}#nearby-map{height:350px;border-radius:16px;margin-t
 .delete-restaurant{color:#9b342b;margin-top:8px}
 
 .restaurant-popup{min-width:170px;max-width:240px;overflow-wrap:anywhere}.restaurant-popup>strong{font-size:16px;color:var(--green)}.restaurant-popup p{margin:8px 0;line-height:1.4}.restaurant-popup a{display:block;margin-top:10px;color:var(--green)}.restaurant-popup .secondary{width:100%;padding:10px;font-size:12px}.nearby-card:focus{outline:3px solid #2563eb;outline-offset:3px}
+
+#restaurant-dialog:has(#restaurant-lookup:not([hidden])){width:min(760px,94vw)}#restaurant-search-map{height:280px;border-radius:12px;margin:12px 0}#restaurant-search-results{display:flex;flex-wrap:wrap;gap:6px 16px;max-height:120px;overflow:auto}#restaurant-search-results .text-button{text-align:left}#restaurant-dialog .leaflet-container{font:inherit}@media(max-width:700px){#restaurant-search-map{height:240px}}

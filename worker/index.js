@@ -113,7 +113,7 @@ async function handle(request, env) {
   if (request.method !== 'POST') fail(404, 'Ruta no encontrada.');
   const origin = request.headers.get('Origin');
   if ((origin && origin !== new URL(request.url).origin) || request.headers.get('Sec-Fetch-Site') === 'cross-site') fail(403, 'Origen no permitido.');
-  const data = await readBody(request,path==='/api/nearby'?512000:16384);
+  const data = await readBody(request,['/api/nearby','/api/restaurants/search'].includes(path)?512000:16384);
   if (['/api/register','/api/login'].includes(path)) return authenticate(path, request, env, data);
   const user = await currentUser(request, env);
   if (!user) fail(401, 'Inicia sesión para continuar.');
@@ -140,6 +140,10 @@ async function handle(request, env) {
     await query(env, `INSERT INTO daily_filters(user_id,day,max_minutes,max_price,cuisine) VALUES(?,?,?,?,?)
       ON CONFLICT(user_id) DO UPDATE SET day=excluded.day,max_minutes=excluded.max_minutes,max_price=excluded.max_price,cuisine=excluded.cuisine`, user.id,day,max_minutes,max_price,cuisine.trim()).run();
     return json(200, {ok:true, day});
+  }
+  if (path === '/api/restaurants/search') {
+    if(typeof data.name!=='string'||data.name.trim().length<2||data.name.trim().length>200)fail(400,'Escribe al menos dos caracteres del nombre.');
+    return json(200,await nearby(env,user,{...data,name:data.name.trim(),members:[user.id],radius:2000},permitted,fail,true));
   }
   if (path === '/api/restaurants/delete') {
     if (!Number.isSafeInteger(data.restaurant_id) || data.restaurant_id <= 0) fail(400, 'Selecciona un restaurante válido.');

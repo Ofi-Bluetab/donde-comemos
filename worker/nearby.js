@@ -55,11 +55,11 @@ export async function fetchOverpass(env,office,fail) {
     }
   }
 }
-export async function nearby(env,user,data,permitted,fail) {
+export async function nearby(env,user,data,permitted,fail,lookup=false) {
   if(!Array.isArray(data.members)||!data.members.length||data.members.length>100||data.members.some(id=>!Number.isInteger(id)))fail(400,'Selecciona al menos un compañero.');
   const [users,filters,saved]=await env.DB.batch([q(env,'SELECT id,email FROM users'),q(env,'SELECT * FROM daily_filters WHERE day=?',today()),q(env,'SELECT * FROM restaurants WHERE external_id IS NOT NULL')]);
   if(data.members.some(id=>!users.results.some(u=>u.id===id&&permitted(env,u.email))))fail(400,'Selecciona compañeros autorizados.');
-  const criteria=filters.results.filter(f=>data.members.includes(f.user_id));
+  const criteria=lookup?[]:filters.results.filter(f=>data.members.includes(f.user_id));
   const office=await officeFor(env,user),warnings=[];
   const radius=Number(data.radius);if(![500,1000,2000].includes(radius))fail(400,'Elige un radio de 500, 1000 o 2000 metros.');
   const origin=[office.latitude,office.longitude].map(n=>n.toFixed(6)).join(':');
@@ -70,6 +70,7 @@ export async function nearby(env,user,data,permitted,fail) {
     return fetchOverpass(env,office,fail);
   },fail,warnings);
   const candidates=raw.elements.map(e=>{const local=saved.results.find(r=>r.external_id===`${e.type}/${e.id}`);const latitude=e.lat??e.center?.lat,longitude=e.lon??e.center?.lon;return {external_id:`${e.type}/${e.id}`,latitude,longitude,name:String(e.tags?.name||'').slice(0,200),cuisine:local?.cuisine||cuisines(e.tags?.cuisine).find(c=>['Asiática','Italiana','Española','Mediterránea','Mexicana','Hamburguesas','Casera'].includes(c))||e.tags?.cuisine||'',cuisines:local?[local.cuisine]:cuisines(e.tags?.cuisine),price:local?.price??null,id:local?.id??null,address:local?.address||[e.tags?.['addr:street'],e.tags?.['addr:housenumber']].filter(Boolean).join(' ').slice(0,200)};}).filter(r=>validPoint(r)&&r.name&&metres(office,r)<=radius);
+  if(lookup){const name=normalizeCuisine(data.name);for(let i=candidates.length-1;i>=0;i--)if(!normalizeCuisine(candidates[i].name).includes(name))candidates.splice(i,1);}
   candidates.sort((a,b)=>metres(office,a)-metres(office,b)||a.external_id.localeCompare(b.external_id));
   const rows=candidates.filter(r=>compatible({...r,minutes:0},criteria.map(f=>({...f,max_minutes:null,max_price:null})))).slice(0,30);
   if(rows.length){

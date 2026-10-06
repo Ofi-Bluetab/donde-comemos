@@ -69,6 +69,27 @@ test('browser restaurant sources never trust prices or times and never populate 
   }finally{f.database.close();}
 });
 
+test('name lookup searches before the limit, ignores daily filters only for addition and preserves duplicate protection',async()=>{
+  const f=fixture();try{
+    const a=await f.request('/api/register',{name:'Lookup',email:'lookup@example.test',password:'test-password'});
+    const uid=(await f.request('/api/state',undefined,a.cookie)).body.user.id;
+    await f.request('/api/filters',{max_minutes:0,max_price:0,cuisine:'Italiana'},a.cookie);
+    const elements=Array.from({length:35},(_,i)=>({type:'node',id:i+1,lat:40.45003,lon:-3.69388,tags:{name:'Otro '+i,cuisine:'spanish'}}));
+    elements.push({type:'node',id:100,lat:40.452,lon:-3.6938,tags:{name:'Café Équipe',cuisine:'spanish','addr:street':'Calle QA'}});
+    f.env.NEARBY_FETCH=async url=>{assert.ok(url.includes('/foot/'));return Response.json({code:'Ok',durations:[[180]],sources:[{distance:0}],destinations:[{distance:0}]});};
+    const query={name:'cafe equipe',client_source:{elements}};
+    assert.equal((await f.request('/api/restaurants/search',query)).status,401);
+    assert.equal((await f.request('/api/restaurants/search',{...query,name:'x'},a.cookie)).status,400);
+    const r=await f.request('/api/restaurants/search',query,a.cookie);assert.equal(r.status,200);assert.equal(r.body.restaurants.length,1);assert.equal(r.body.restaurants[0].name,'Café Équipe');assert.equal(r.body.restaurants[0].minutes,3);
+    assert.equal(f.database.prepare('SELECT COUNT(*) n FROM restaurants').get().n,0);
+    const item={...r.body.restaurants[0],price:15};
+    assert.equal((await f.request('/api/restaurants',item,a.cookie)).status,200);
+    assert.equal((await f.request('/api/restaurants',item,a.cookie)).status,409);
+    assert.equal((await f.request('/api/recommendations',{members:[uid]},a.cookie)).body.recommendations.length,0);
+    assert.equal((await f.request('/api/restaurants/search',query,a.cookie)).body.restaurants[0].id,1);
+  }finally{f.database.close();}
+});
+
 test('restaurant deletion requires authentication and origin, removes all ratings and preserves other data', async () => {
   const f=fixture();try {
     const a=await f.request('/api/register',{name:'Delete A',email:'delete-a@example.test',password:'test-password'});

@@ -31,3 +31,5 @@ Corrección publicada y migración 0005 aplicada. Mantener D1/PASSWORD_PEPPER. D
 - Recargar la aplicación para ver Eliminar en las tarjetas; confirmar solo cuando se quiera retirar el restaurante y todas sus valoraciones.
 
 - Recargar y pulsar los locales del mapa para abrir la ficha; el marcador azul identifica tu salida.
+
+- Recargar y probar Añadir restaurante: nombre → Buscar nombre en el mapa → marcador → confirmar precio/datos → Añadir este local. Si no aparece dentro de 2 km, usar alta manual.

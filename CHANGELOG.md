@@ -82,3 +82,6 @@
 2026-10-05: corregida búsqueda mediante consulta OSM desde navegador (POST/alternativa GET) y cálculo/validación en servidor. Respaldo API ante fallo del navegador. Prueba remota de tres radios y UI publicada: 28 sitios dentro de 10 min en oficina pública de prueba. Cuenta QA retirada. Versión 06977dbc-da45-4490-b447-8cc6af038dcf.
 
 2026-10-05: fichas emergentes en restaurantes del mapa (datos conocidos, ruta/reseñas y enlace al listado). Marcador de salida azul con borde blanco. Pulsar locales no mueve la salida. Publicada 09ba8d53-9045-408b-b4fa-ac869750796d.
+
+## 2026-10-06
+- Alta por nombre con mapa, coincidencias cercanas y selección que completa datos públicos disponibles. Guardado desde ficha con validación de precio/campos y protección de duplicados. ADR0020; 13 tests, smoke y UI local pasan; desplegada e31674d0.
